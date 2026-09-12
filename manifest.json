@@ -1,0 +1,14 @@
+{
+  "name": "Jaxx AI",
+  "short_name": "Jaxx",
+  "start_url": "/Chatbot-app/",
+  "scope": "/Chatbot-app/",
+  "display": "standalone",
+  "background_color": "#071326",
+  "theme_color": "#071326",
+  "description": "Jaxx AI — lightweight mobile-first chat assistant",
+  "icons": [
+    { "src": "/Chatbot-app/icons/icon.svg", "type": "image/svg+xml", "sizes": "any" },
+    { "src": "/Chatbot-app/icons/maskable_icon.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "maskable" }
+  ]
+}
