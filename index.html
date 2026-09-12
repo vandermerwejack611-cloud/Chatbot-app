@@ -81,6 +81,8 @@
     .onboard-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.08);margin:0 6px}
     .onboard-dot.active{background:var(--accent)}
 
+    .version-badge{position:absolute;left:12px;bottom:12px;padding:6px 10px;border-radius:10px;background:rgba(0,0,0,0.35);color:var(--muted);font-size:12px}
+
     .muted{color:var(--muted)}
     .hidden{display:none}
 
@@ -182,6 +184,8 @@
 
     </div>
 
+    <div class="version-badge" id="versionBadge">Version: v2 — <a id="noSwLink" href="?no-sw=1" style="color:var(--accent)">Load without SW</a></div>
+
     <!-- onboarding guide overlay (hidden by default) -->
     <div id="onboard" class="onboard-overlay hidden" aria-hidden="true">
       <div class="onboard-card" role="dialog" aria-modal="true">
@@ -210,6 +214,10 @@
   </div>
 
   <script>
+    // App version for debugging and cache-bypass
+    const APP_VERSION = 'v2';
+    console.log('Jaxx AI version', APP_VERSION);
+
     // Platform detection + theme
     const platformSelect = document.getElementById('platformSelect');
     function detectPlatform(){
@@ -443,8 +451,13 @@
       if(selectedId) selectConversation(selectedId);
 
       // register service worker for offline/PWA
-      if('serviceWorker' in navigator){
-        navigator.serviceWorker.register('/Chatbot-app/sw.js').then(()=>console.log('SW registered')).catch(()=>console.log('SW registration failed'));
+      // allow bypass with ?no-sw=1 or localStorage flag
+      const urlParams = new URLSearchParams(window.location.search);
+      const skipSW = urlParams.has('no-sw') || localStorage.getItem('jaxx_skip_sw');
+      if(!skipSW && 'serviceWorker' in navigator){
+        navigator.serviceWorker.register('/Chatbot-app/sw.js').then(()=>console.log('SW registered (version:', APP_VERSION, ')')).catch(()=>console.log('SW registration failed'));
+      } else if(skipSW){
+        console.log('Service worker registration skipped (no-sw active) — APP_VERSION', APP_VERSION);
       }
 
       // autosave periodically
@@ -453,6 +466,11 @@
       }, 2000);
 
     })();
+
+    // show link behavior: clicking "Load without SW" sets localStorage and reloads
+    document.getElementById('noSwLink').addEventListener('click', (e)=>{
+      e.preventDefault(); localStorage.setItem('jaxx_skip_sw','1'); window.location.href = window.location.pathname + window.location.search.replace(/no-sw=?1?/,'') + (window.location.search.includes('no-sw')? '':'?no-sw=1');
+    });
 
     // Expose showView for debugging
     window.showView = showView;
