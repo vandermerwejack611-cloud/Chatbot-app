@@ -1,9 +1,11 @@
-const CACHE_NAME = 'jaxxai-v1';
+const CACHE_NAME = 'jaxxai-v2';
 const ASSETS = [
   '/Chatbot-app/',
   '/Chatbot-app/index.html',
   '/Chatbot-app/icons/icon.svg',
-  '/Chatbot-app/icons/maskable_icon.svg'
+  '/Chatbot-app/icons/maskable_icon.svg',
+  '/Chatbot-app/icons/splash-portrait.svg',
+  '/Chatbot-app/icons/splash-landscape.svg'
 ];
 
 self.addEventListener('install', (event) => {
