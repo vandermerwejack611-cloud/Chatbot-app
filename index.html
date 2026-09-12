@@ -4,179 +4,266 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Jaxx AI — Mobile</title>
+  <meta name="theme-color" content="#071326" />
   <style>
-    :root{--bg:#071326;--surface:#0b1724;--muted:#94a3b8;--accent:#06b6d4;--accent-2:#60a5fa;--card:#0e1a2b}
+    :root{--bg:#031123;--surface:#0b1724;--muted:#94a3b8;--accent:#06b6d4;--accent-2:#60a5fa;--card:#0e1a2b}
     *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;color:#e6eef6;background:linear-gradient(180deg,#031123 0%,#071326 100%)}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;color:#e6eef6;background:linear-gradient(180deg,#031123 0%,#071326 100%)}
 
-    /* App frame mimics a phone */
-    .phone{width:100%;max-width:420px;margin:1.25rem auto;border-radius:28px;overflow:hidden;background:linear-gradient(180deg,var(--surface),#071226);box-shadow:0 20px 60px rgba(2,6,23,0.6);min-height:720px;border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column}
+    /* App phone frame */
+    .phone{width:100%;max-width:420px;margin:1.25rem auto;border-radius:28px;overflow:hidden;background:linear-gradient(180deg,var(--surface),#071226);box-shadow:0 20px 60px rgba(2,6,23,0.6);min-height:720px;border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;position:relative}
 
-    /* Top bar */
+    /* Splash / start screen */
+    .splash{position:absolute;inset:0;background:linear-gradient(180deg,#071326,#02101a);display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:200;padding:20px;transition:opacity .45s ease,transform .45s cubic-bezier(.2,.9,.2,1)}
+    .splash.hidden{opacity:0;transform:scale(.98);pointer-events:none}
+    .splash .logo{width:130px;height:130px;border-radius:28px;background:linear-gradient(180deg,#60a5fa,#06b6d4);display:flex;align-items:center;justify-content:center;color:#021;font-weight:800;font-size:72px;box-shadow:0 20px 40px rgba(6,182,212,0.14);transition:transform .6s cubic-bezier(.2,.9,.2,1)}
+    .splash.hint .logo{transform:scale(.92)}
+    .splash h2{margin:18px 0 6px;font-size:22px;opacity:.98}
+    .splash p{margin:0;color:var(--muted)}
+    .splash .start-btn{margin-top:18px;padding:10px 18px;border-radius:12px;border:none;background:var(--accent);color:#012;font-weight:700;box-shadow:0 8px 18px rgba(6,182,212,0.12);transition:transform .18s ease}
+    .splash .start-btn:active{transform:translateY(1px)}
+
     .topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:linear-gradient(90deg,rgba(255,255,255,0.015),transparent);backdrop-filter:blur(6px)}
-
     .brand{display:flex;gap:10px;align-items:center}
     .brand-dot{width:14px;height:14px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
     .brand h1{font-size:18px;margin:0;letter-spacing:0.2px}
     .tiny-muted{font-size:12px;color:var(--muted)}
 
-    /* Shell with two-pane windows (list + chat) on larger screens, stacked on small */
     .shell{flex:1;display:grid;grid-template-columns:1fr;gap:0}
     @media(min-width:800px){.shell{grid-template-columns:280px 1fr}}
 
-    /* Conversations list */
-    .list-panel{background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);padding:10px;border-right:1px solid rgba(255,255,255,0.02);display:flex;flex-direction:column;gap:8px}
+    /* Views */
+    .view{display:none;height:100%;opacity:0;transform:translateY(6px);transition:opacity .32s ease,transform .32s cubic-bezier(.2,.9,.2,1)}
+    .view.active{display:block;opacity:1;transform:none}
+
+    .list-panel{background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);padding:10px;border-right:1px solid rgba(255,255,255,0.02);display:flex;flex-direction:column;gap:8px;height:100%}
     .list-search{display:flex;gap:8px;padding:8px}
-    .search{flex:1;padding:8px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+    .search{flex:1;padding:8px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit;transition:box-shadow .18s ease}
+    .search:focus{box-shadow:0 8px 20px rgba(6,182,212,0.06);outline:none}
     .new-chat{background:var(--accent);color:#021;border:none;padding:8px 10px;border-radius:10px}
 
-    .convo-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;cursor:pointer}
-    .convo-item:hover{background:rgba(255,255,255,0.01)}
+    .convo-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;cursor:pointer;transition:transform .12s ease,background .12s ease}
+    .convo-item:hover{transform:translateX(6px);background:rgba(255,255,255,0.01)}
     .avatar{width:40px;height:40px;border-radius:10px;background:linear-gradient(90deg,var(--accent-2),var(--accent));display:flex;align-items:center;justify-content:center;font-weight:700;color:#012}
     .convo-meta{flex:1;display:flex;flex-direction:column}
     .convo-meta .title{font-weight:600}
     .convo-meta .sub{font-size:12px;color:var(--muted);margin-top:4px}
 
-    /* Chat panel */
     .chat-panel{display:flex;flex-direction:column;height:100%}
-    .chat-window{flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:8px}
-    .bubble{max-width:78%;padding:10px 12px;border-radius:14px;line-height:1.3;word-break:break-word}
+    .chat-window{flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+
+    /* message animations */
+    .bubble{max-width:78%;padding:10px 12px;border-radius:14px;line-height:1.3;word-break:break-word;opacity:0;transform:translateY(8px);transition:opacity .28s ease,transform .28s cubic-bezier(.2,.9,.2,1)}
+    .bubble.show{opacity:1;transform:none}
     .bubble.user{align-self:flex-end;background:linear-gradient(90deg,#0369a1,#06b6d4);color:white;border-bottom-right-radius:6px}
     .bubble.bot{align-self:flex-start;background:linear-gradient(90deg,#071426,#0b1730);color:#dbeafe;border:1px solid rgba(255,255,255,0.02);border-bottom-left-radius:6px}
     .meta-line{font-size:11px;color:var(--muted);margin-top:6px}
 
-    /* Multiple windows: small floating cards to represent windows */
-    .floating-windows{position:relative}
-    .mini-window{position:absolute;right:16px;top:16px;width:160px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:12px;padding:8px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 8px 30px rgba(2,6,23,0.4)}
-
-    /* Composer fixed at bottom like a phone app */
     .composer-bar{display:flex;gap:8px;padding:12px;border-top:1px solid rgba(255,255,255,0.02);background:linear-gradient(180deg,transparent,rgba(0,0,0,0.12))}
     .input{flex:1;padding:12px;border-radius:14px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.02);resize:none;color:inherit}
     .send-btn{background:var(--accent);color:#012;border:none;padding:10px 12px;border-radius:12px}
     .attach{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px;border-radius:10px;color:var(--muted)}
 
-    /* Bottom nav for mobile */
     .bottom-nav{display:flex;justify-content:space-around;padding:8px;border-top:1px solid rgba(255,255,255,0.02);background:linear-gradient(180deg,rgba(0,0,0,0.06),transparent)}
     .nav-btn{display:flex;flex-direction:column;align-items:center;font-size:12px;color:var(--muted);gap:6px;padding:6px}
     .nav-btn.active{color:var(--accent)}
 
-    /* Panels inside settings window */
     .settings-panel{padding:12px;display:flex;flex-direction:column;gap:10px}
     .row{display:flex;gap:8px;align-items:center}
 
-    /* Modal/fullscreen settings for mobile */
     .modal{position:fixed;inset:0;background:linear-gradient(180deg,rgba(2,6,23,0.75),rgba(2,6,23,0.85));display:flex;align-items:center;justify-content:center;z-index:80}
     .modal-card{width:92%;max-width:420px;background:var(--card);border-radius:16px;padding:12px;border:1px solid rgba(255,255,255,0.03)}
 
-    /* Small helpers */
+    .onboard-overlay{position:fixed;inset:0;z-index:300;background:linear-gradient(180deg,rgba(2,6,23,0.6),rgba(2,6,23,0.85));display:flex;align-items:center;justify-content:center;padding:16px}
+    .onboard-card{width:92%;max-width:420px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:14px;padding:16px;border:1px solid rgba(255,255,255,0.04);text-align:center;color:inherit}
+    .onboard-step{min-height:110px}
+    .onboard-controls{display:flex;justify-content:space-between;margin-top:12px}
+    .onboard-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.08);margin:0 6px}
+    .onboard-dot.active{background:var(--accent)}
+
     .muted{color:var(--muted)}
-    .badge{background:rgba(255,255,255,0.03);padding:6px 8px;border-radius:10px;font-size:12px}
     .hidden{display:none}
 
   </style>
 </head>
 <body>
   <div class="phone" role="application" aria-label="Jaxx AI mobile app">
+
+    <!-- splash / startup screen -->
+    <div id="splash" class="splash" aria-hidden="false">
+      <img src="/Chatbot-app/icons/splash-portrait.svg" alt="Jaxx" style="width:160px;height:160px;border-radius:20px;object-fit:cover;margin-bottom:8px">
+      <h2>Welcome to Jaxx AI</h2>
+      <p class="muted">Your mobile AI assistant — quick, private, and fast.</p>
+      <button id="startBtn" class="start-btn">Get started</button>
+      <div style="margin-top:12px;color:var(--muted);font-size:12px">Tip: open Settings to connect your LLM proxy</div>
+    </div>
+
     <div class="topbar">
       <div class="brand">
-        <div class="brand-dot"></div>
+        <div class="brand-dot" aria-hidden="true"></div>
         <div>
           <h1>Jaxx AI</h1>
           <div class="tiny-muted">Smart mobile assistant</div>
         </div>
       </div>
+
       <div style="display:flex;align-items:center;gap:10px">
-        <button id="openSettingsBtn" class="attach">⚙️</button>
-        <button id="newChatBtn" class="new-chat">New</button>
+        <select id="platformSelect" aria-label="Platform theme">
+          <option value="auto">Auto</option>
+          <option value="ios">iOS</option>
+          <option value="material">Android</option>
+        </select>
+        <button id="showGuideBtn" class="attach" aria-label="Show guide">❔</button>
+        <button id="openSettingsBtn" class="attach" aria-label="Open settings">⚙️</button>
+        <button id="newChatBtn" class="new-chat" aria-label="New chat">New</button>
       </div>
     </div>
 
     <div class="shell">
-      <aside class="list-panel" id="listPanel">
+      <!-- Conversations view (left panel) -->
+      <aside id="convosView" class="view list-panel">
         <div class="list-search">
-          <input id="search" class="search" placeholder="Search chats or prompts" />
-          <button id="newMobileChat" class="new-chat">+</button>
+          <input id="search" class="search" placeholder="Search chats or prompts" aria-label="Search chats" />
+          <button id="newMobileChat" class="new-chat" aria-label="New chat">+</button>
         </div>
-        <div id="convoList" style="overflow:auto;padding:6px;">
-          <!-- conversation items inserted here -->
-        </div>
+        <div id="convoList" style="overflow:auto;padding:6px;" aria-live="polite"></div>
       </aside>
 
-      <section class="chat-panel">
-        <div class="chat-window" id="chat">
-          <!-- messages -->
-        </div>
+      <!-- Main chat view -->
+      <section id="chatView" class="view chat-panel active">
+        <div class="chat-window" id="chat" role="log" aria-live="polite"></div>
 
         <div class="composer-bar">
-          <button id="attach" class="attach">＋</button>
-          <textarea id="input" class="input" rows="1" placeholder="Message Jaxx…"></textarea>
-          <button id="send" class="send-btn">Send</button>
+          <button id="attach" class="attach" aria-label="Attach">＋</button>
+          <textarea id="input" class="input" rows="1" placeholder="Message Jaxx…" aria-label="Message input"></textarea>
+          <button id="send" class="send-btn" aria-label="Send">Send</button>
         </div>
 
-        <div class="bottom-nav">
-          <div class="nav-btn active" data-view="chats">💬<div>Chats</div></div>
-          <div class="nav-btn" data-view="explore">🔎<div>Explore</div></div>
-          <div class="nav-btn" data-view="settings">⚙️<div>Settings</div></div>
+        <div class="bottom-nav" role="navigation" aria-label="Bottom navigation">
+          <button class="nav-btn active" data-view="convosView" aria-pressed="true">💬<div>Chats</div></button>
+          <button class="nav-btn" data-view="exploreView">🔎<div>Explore</div></button>
+          <button class="nav-btn" data-view="settingsView">⚙️<div>Settings</div></button>
         </div>
-
       </section>
-    </div>
-  </div>
 
-  <!-- Floating mini windows example (multiple windows look) -->
-  <div class="floating-windows">
-    <div id="mini1" class="mini-window" style="top:110px;right:18px">Saved prompts<div class="muted" style="font-size:12px;margin-top:6px">"Quick intro"</div></div>
-    <div id="mini2" class="mini-window" style="top:220px;right:18px">Shortcuts<div class="muted" style="font-size:12px;margin-top:6px">Cmd+K to search</div></div>
-  </div>
+      <!-- Explore view placeholder -->
+      <section id="exploreView" class="view">
+        <div style="padding:18px;color:var(--muted)">Explore: saved prompts, templates and quick actions will appear here.</div>
+      </section>
 
-  <!-- Modal: Settings -->
-  <div id="settingsModal" class="modal hidden" aria-hidden="true">
-    <div class="modal-card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <strong>Settings</strong>
-        <button id="closeSettings" class="attach">✖</button>
-      </div>
-      <div class="settings-panel">
-        <div>
-          <label class="muted">Mode</label>
-          <div style="display:flex;gap:8px;margin-top:6px">
-            <button class="mode active" data-mode="echo">Echo</button>
-            <button class="mode" data-mode="rules">Rule</button>
-            <button class="mode" data-mode="api">API</button>
+      <!-- Settings view (full view on mobile) -->
+      <section id="settingsView" class="view">
+        <div class="settings-panel">
+          <div>
+            <label class="muted">Mode</label>
+            <div style="display:flex;gap:8px;margin-top:6px">
+              <button class="mode active" data-mode="echo">Echo</button>
+              <button class="mode" data-mode="rules">Rule</button>
+              <button class="mode" data-mode="api">API</button>
+            </div>
+          </div>
+
+          <div>
+            <label class="muted">API endpoint</label>
+            <input id="api-url" type="text" placeholder="https://your-proxy.example/chat" />
+          </div>
+
+          <div>
+            <label class="muted">Header (name:value)</label>
+            <input id="api-header" type="text" placeholder="X-Client-Key: bbavjwbx" />
+          </div>
+
+          <div style="display:flex;gap:8px">
+            <button id="testApiBtn" class="new-chat">Test</button>
+            <button id="saveSettings" class="attach">Save</button>
           </div>
         </div>
+      </section>
 
-        <div>
-          <label class="muted">API endpoint</label>
-          <input id="api-url" type="text" placeholder="https://your-proxy.example/chat" />
+    </div>
+
+    <!-- onboarding guide overlay (hidden by default) -->
+    <div id="onboard" class="onboard-overlay hidden" aria-hidden="true">
+      <div class="onboard-card" role="dialog" aria-modal="true">
+        <div class="onboard-step" id="onboardContent">
+          <!-- dynamic content injected here -->
         </div>
-
-        <div>
-          <label class="muted">Header (name:value)</label>
-          <input id="api-header" type="text" placeholder="X-Client-Key: bbavjwbx" />
+        <div style="margin-top:12px">
+          <div id="onboardDots" style="text-align:center"></div>
         </div>
-
-        <div style="display:flex;gap:8px">
-          <button id="testApiBtn" class="new-chat">Test</button>
-          <button id="saveSettings" class="attach">Save</button>
+        <div class="onboard-controls">
+          <button id="onboardPrev" class="attach">Back</button>
+          <div style="display:flex;gap:8px">
+            <label class="muted" style="align-self:center;font-size:13px"><input id="onboardDontShow" type="checkbox"> Don't show again</label>
+            <button id="onboardNext" class="new-chat">Next</button>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- floating mini-windows -->
+    <div class="floating-windows" aria-hidden="true">
+      <div id="mini1" class="mini-window" style="top:110px;right:18px">Saved prompts<div class="muted" style="font-size:12px;margin-top:6px">"Quick intro"</div></div>
+      <div id="mini2" class="mini-window" style="top:220px;right:18px">Shortcuts<div class="muted" style="font-size:12px;margin-top:6px">Cmd+K to search</div></div>
+    </div>
+
   </div>
 
   <script>
-    // Data models (simple in-memory) — in future this can be persisted per user
+    // Platform detection + theme
+    const platformSelect = document.getElementById('platformSelect');
+    function detectPlatform(){
+      const ua = navigator.userAgent || navigator.vendor || window.opera;
+      if(/android/i.test(ua)) return 'material';
+      if(/iPad|iPhone|iPod/.test(ua) && !window.MSStream) return 'ios';
+      return 'material';
+    }
+    function applyPlatform(p){
+      document.body.classList.remove('ios','material');
+      if(p==='auto'){ p = detectPlatform(); }
+      document.body.classList.add(p);
+      platformSelect.value = (platformSelect.value==='auto'? 'auto' : p);
+      localStorage.setItem('jaxx_platform', p);
+    }
+    platformSelect.addEventListener('change', ()=>applyPlatform(platformSelect.value));
+    applyPlatform(localStorage.getItem('jaxx_platform') || 'auto');
+
+    // Views & splash
+    const splash = document.getElementById('splash');
+    const startBtn = document.getElementById('startBtn');
+    const views = ['convosView','chatView','exploreView','settingsView'];
+    function showView(id){
+      views.forEach(v => document.getElementById(v).classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      // update nav active
+      document.querySelectorAll('.nav-btn').forEach(b=> b.classList.toggle('active', b.dataset.view===id));
+    }
+
+    // When app starts, show splash; animate hide and then show onboarding if first time
+    function hideSplashAndMaybeOnboard(){
+      if(!splash) return;
+      splash.classList.add('hidden');
+      setTimeout(()=>{ if(splash) { splash.style.display='none'; splash.setAttribute('aria-hidden','true'); } }, 480);
+
+      const dont = localStorage.getItem('jaxx_onboard_dont');
+      if(!dont){ // show onboarding after slight delay
+        setTimeout(()=> showOnboarding(), 520);
+      }
+    }
+    startBtn.addEventListener('click', ()=>{ hideSplashAndMaybeOnboard(); });
+    setTimeout(()=>{ if(splash) splash.classList.add('hint'); }, 900);
+    setTimeout(()=>{ if(splash && splash.style.display!=='none') hideSplashAndMaybeOnboard(); }, 2200);
+
+    // Basic UI wiring (conversations, chat, settings)
     const convoListEl = document.getElementById('convoList');
     const chatEl = document.getElementById('chat');
     const inputEl = document.getElementById('input');
     const sendBtn = document.getElementById('send');
     const searchEl = document.getElementById('search');
-    const settingsModal = document.getElementById('settingsModal');
-    const openSettingsBtn = document.getElementById('openSettingsBtn');
-    const closeSettingsBtn = document.getElementById('closeSettings');
     const apiUrlInput = document.getElementById('api-url');
     const apiHeaderInput = document.getElementById('api-header');
     const testApiBtn = document.getElementById('testApiBtn');
+    const showGuideBtn = document.getElementById('showGuideBtn');
 
     let conversations = [];
     let selectedId = null;
@@ -190,8 +277,8 @@
       conversations.forEach(c=>{
         if(filter && !c.title.toLowerCase().includes(filter.toLowerCase())) return;
         const item = document.createElement('div'); item.className='convo-item'; item.dataset.id=c.id;
-        item.innerHTML = `<div class='avatar'>${c.title.slice(0,2).toUpperCase()}</div><div class='convo-meta'><div class='title'>${escapeHtml(c.title)}</div><div class='sub'>${escapeHtml(c.last || '')}</div></div>`;
-        item.addEventListener('click', ()=>selectConversation(c.id));
+        item.innerHTML = `<div class='avatar' aria-hidden='true'>${c.title.slice(0,2).toUpperCase()}</div><div class='convo-meta'><div class='title'>${escapeHtml(c.title)}</div><div class='sub'>${escapeHtml(c.last || '')}</div></div>`;
+        item.addEventListener('click', ()=>{ selectConversation(c.id); showView('chatView'); });
         convoListEl.appendChild(item);
       });
       if(conversations.length===0){
@@ -216,10 +303,12 @@
 
     function renderChat(c){
       chatEl.innerHTML='';
-      c.messages.forEach(m=>{
+      c.messages.forEach((m,i)=>{
         const b = document.createElement('div'); b.className='bubble '+(m.role==='user'?'user':'bot');
         b.innerHTML = escapeHtml(m.text) + `<div class='meta-line'>${shortTs(m.ts)}</div>`;
         chatEl.appendChild(b);
+        // stagger existing messages slightly
+        setTimeout(()=> b.classList.add('show'), 30 + i*40);
       });
       chatEl.scrollTop = chatEl.scrollHeight;
     }
@@ -229,27 +318,31 @@
       const c = conversations.find(x=>x.id===selectedId);
       const m = { role, text, ts: nowISO() };
       c.messages.push(m); c.last = text.slice(0,48);
-      renderChat(c); renderConvoList();
+      const b = document.createElement('div'); b.className='bubble '+(role==='user'?'user':'bot');
+      b.innerHTML = escapeHtml(text) + `<div class='meta-line'>${shortTs(m.ts)}</div>`;
+      chatEl.appendChild(b);
+      requestAnimationFrame(()=> requestAnimationFrame(()=> b.classList.add('show')));
+      renderConvoList();
+      chatEl.scrollTop = chatEl.scrollHeight;
     }
 
-    function escapeHtml(s){ return s.replace(/[&<>\"']/g, function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]}); }
+    function escapeHtml(s){ return s.replace(/[&<>\\\"']/g, function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[m]}); }
 
     // Composer
     sendBtn.addEventListener('click', ()=>{ const txt = inputEl.value.trim(); if(!txt) return; appendMessageToCurrent('user', txt); inputEl.value=''; handleSend(txt); });
     inputEl.addEventListener('keydown', (e)=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendBtn.click(); }});
 
     // New chat
-    document.getElementById('newChatBtn').addEventListener('click', ()=>createConversation('New Chat'));
-    document.getElementById('newMobileChat').addEventListener('click', ()=>createConversation('New Chat'));
+    document.getElementById('newChatBtn').addEventListener('click', ()=>{ createConversation('New Chat'); showView('chatView'); });
+    document.getElementById('newMobileChat').addEventListener('click', ()=>{ createConversation('New Chat'); showView('chatView'); });
 
     // Search
     searchEl.addEventListener('input',(e)=>renderConvoList(e.target.value));
 
-    // Settings modal
-    openSettingsBtn.addEventListener('click', ()=>{ settingsModal.classList.remove('hidden'); settingsModal.setAttribute('aria-hidden','false'); });
-    closeSettingsBtn.addEventListener('click', ()=>{ settingsModal.classList.add('hidden'); settingsModal.setAttribute('aria-hidden','true'); });
+    // Nav buttons
+    document.querySelectorAll('.nav-btn').forEach(b=>b.addEventListener('click', ()=>{ const v = b.dataset.view; showView(v); document.querySelectorAll('.nav-btn').forEach(n=>n.classList.remove('active')); b.classList.add('active'); }));
 
-    // Modes inside modal
+    // Modes inside settings
     document.querySelectorAll('.mode').forEach(b=>b.addEventListener('click', ()=>{
       document.querySelectorAll('.mode').forEach(x=>x.classList.remove('active'));
       b.classList.add('active'); mode = b.dataset.mode || 'echo';
@@ -270,15 +363,53 @@
       }catch(err){ alert('API test failed: '+err.message); }
     });
 
-    // Basic send handler that supports echo / rule-based / api (proxy) modes
+    // Onboarding guide implementation
+    const onboard = document.getElementById('onboard');
+    const onboardContent = document.getElementById('onboardContent');
+    const onboardDots = document.getElementById('onboardDots');
+    const onboardPrev = document.getElementById('onboardPrev');
+    const onboardNext = document.getElementById('onboardNext');
+    const onboardDontShow = document.getElementById('onboardDontShow');
+
+    const steps = [
+      {title:'Create a new chat', body:'Tap New to start a conversation. You can have multiple chats for different topics.'},
+      {title:'Send messages', body:'Type in the composer and press Send. Use Shift+Enter for a newline.'},
+      {title:'Connect an LLM', body:'Open Settings → API and enter your proxy endpoint and header (X-Client-Key). Then Test.'},
+      {title:'Use Quick Prompts', body:'Tap the saved prompts or the ? guide button anytime to reopen this guide.'}
+    ];
+    let stepIndex = 0;
+
+    function renderOnboard(){
+      const s = steps[stepIndex];
+      onboardContent.innerHTML = `<h3 style="margin:0 0 8px">${s.title}</h3><div class="muted">${s.body}</div>`;
+      onboardDots.innerHTML = steps.map((_,i)=>`<span class="onboard-dot ${i===stepIndex? 'active':''}"></span>`).join('');
+      onboardPrev.disabled = stepIndex===0;
+      onboardNext.textContent = stepIndex===steps.length-1 ? 'Done' : 'Next';
+    }
+
+    function showOnboarding(){
+      if(!onboard) return;
+      if(localStorage.getItem('jaxx_onboard_dont')) return;
+      stepIndex = 0; renderOnboard(); onboard.classList.remove('hidden'); onboard.setAttribute('aria-hidden','false');
+    }
+
+    onboardPrev.addEventListener('click', ()=>{ if(stepIndex>0){ stepIndex--; renderOnboard(); }});
+    onboardNext.addEventListener('click', ()=>{
+      if(stepIndex < steps.length-1){ stepIndex++; renderOnboard(); return; }
+      // Finish
+      if(onboardDontShow.checked) localStorage.setItem('jaxx_onboard_dont', '1');
+      onboard.classList.add('hidden'); onboard.setAttribute('aria-hidden','true'); setTimeout(()=> onboard.style.display='none', 320);
+    });
+
+    showGuideBtn.addEventListener('click', ()=> { onboard.style.display='flex'; showOnboarding(); });
+
+    // API send handler
     async function handleSend(text){
       if(mode==='echo'){ setTimeout(()=>appendMessageToCurrent('bot','Echo: '+text), 300 + Math.random()*300); return; }
-      if(mode==='rules'){ setTimeout(()=>{ const t=text.toLowerCase(); if(/hello|hi|hey\b/.test(t)) appendMessageToCurrent('bot','Hello!'); else if(/time/.test(t)) appendMessageToCurrent('bot','Current time: '+new Date().toLocaleString()); else if(/joke/.test(t)) appendMessageToCurrent('bot','Why did the developer go broke? He used up all his cache. 😄'); else appendMessageToCurrent('bot','I did not understand. Try help.'); }, 400); return; }
+      if(mode==='rules'){ setTimeout(()=>{ const t=text.toLowerCase(); if(/hello|hi|hey\\b/.test(t)) appendMessageToCurrent('bot','Hello!'); else if(/time/.test(t)) appendMessageToCurrent('bot','Current time: '+new Date().toLocaleString()); else if(/joke/.test(t)) appendMessageToCurrent('bot','Why did the developer go broke? He used up all his cache. 😄'); else appendMessageToCurrent('bot','I did not understand. Try help.'); }, 400); return; }
 
-      // API mode
       const url = apiUrlInput.value.trim(); const header = apiHeaderInput.value.trim();
       if(!url){ appendMessageToCurrent('bot','API URL not set in Settings.'); return; }
-      // show temporary typing bubble
       const typing = { role:'bot', text:'Jaxx is thinking...', ts: nowISO() };
       appendMessageToCurrent('bot', typing.text);
 
@@ -289,7 +420,6 @@
         if(!res.ok) throw new Error('API error '+res.status);
         const data = await res.json();
         const reply = data.reply || (data.choices && data.choices[0] && (data.choices[0].message?.content || data.choices[0].text)) || JSON.stringify(data);
-        // remove last typing and append actual reply
         const c = conversations.find(x=>x.id===selectedId); if(c && c.messages.length) c.messages.pop();
         appendMessageToCurrent('bot', reply);
       }catch(err){
@@ -298,12 +428,34 @@
       }
     }
 
-    // Small demo: preload a conversation
+    // Init: load persisted state if present
     (function init(){
-      createConversation('Welcome');
-      appendMessageToCurrent('bot','Welcome to Jaxx AI — tap New to start a chat');
+      try{
+        const saved = localStorage.getItem('jaxx_state');
+        if(saved){
+          const s = JSON.parse(saved);
+          conversations = s.conversations || [];
+          selectedId = s.selectedId || null;
+        }
+      }catch(e){/* ignore */}
+      if(conversations.length===0){ createConversation('Welcome'); appendMessageToCurrent('bot','Welcome to Jaxx AI — tap New to start a chat'); }
       renderConvoList();
+      if(selectedId) selectConversation(selectedId);
+
+      // register service worker for offline/PWA
+      if('serviceWorker' in navigator){
+        navigator.serviceWorker.register('/Chatbot-app/sw.js').then(()=>console.log('SW registered')).catch(()=>console.log('SW registration failed'));
+      }
+
+      // autosave periodically
+      setInterval(()=>{
+        try{ localStorage.setItem('jaxx_state', JSON.stringify({ conversations, selectedId })); }catch(e){}
+      }, 2000);
+
     })();
+
+    // Expose showView for debugging
+    window.showView = showView;
 
   </script>
 </body>
