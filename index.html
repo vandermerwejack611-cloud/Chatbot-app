@@ -3,14 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Chatbot App — Advanced</title>
+  <title>Jaxx AI — Chatbot</title>
   <style>
     :root{--bg:#0f1724;--card:#0b1220;--muted:#94a3b8;--accent:#06b6d4;--accent-2:#60a5fa}
     *{box-sizing:border-box}
-    body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial; margin:0;background:linear-gradient(180deg,#071024 0%, #081226 100%);color:#e6eef6;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
-    .app{width:100%;max-width:920px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:0.75rem;box-shadow:0 8px 30px rgba(2,6,23,0.6)}
-    header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1rem 0}
-    header h1{margin:0;font-size:1.1rem}
+    body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial; margin:0;background:linear-gradient(180deg,#071024 0%, #081226 100%);color:#e6eef6;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem}
+    .app{width:100%;max-width:920px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:0.5rem;box-shadow:0 8px 30px rgba(2,6,23,0.6)}
+    header{display:flex;align-items:center;justify-content:space-between;padding:0.85rem 1rem}
+    header h1{margin:0;font-size:1.05rem;display:flex;align-items:center;gap:.6rem}
+    header .brand-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent)}
     .meta{display:flex;gap:.5rem;align-items:center}
     .meta small{color:var(--muted)}
 
@@ -41,7 +42,7 @@
     .mode.active{background:linear-gradient(90deg,var(--accent-2),var(--accent));color:#012;border-color:rgba(255,255,255,0.06)}
     .small{font-size:.85rem}
 
-    footer{padding:0 1rem 1rem;display:flex;align-items:center;justify-content:space-between;color:var(--muted)}
+    footer{padding:0.6rem 1rem 1rem;display:flex;align-items:center;justify-content:space-between;color:var(--muted)}
 
     .row{display:flex;gap:.5rem;align-items:center}
     input[type="text"],select{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:.4rem .5rem;border-radius:8px;color:inherit}
@@ -52,14 +53,38 @@
     .toolbar{display:flex;gap:.5rem}
     pre.export{max-height:200px;overflow:auto;background:rgba(0,0,0,0.35);padding:.5rem;border-radius:6px}
 
+    /* Mobile specifics */
+    @media (max-width:720px){
+      body{padding:0.75rem}
+      .app{border-radius:10px;padding:0}
+      header{padding:.6rem}
+      header h1{font-size:1rem}
+      .container{padding:.6rem;gap:.6rem}
+      .container{grid-template-columns:1fr}
+      .sidebar{position:fixed;right:0;top:0;bottom:0;width:92%;max-width:360px;background:var(--card);z-index:60;transform:translateX(110%);transition:transform .25s ease;border-left:1px solid rgba(255,255,255,0.03);box-shadow:-20px 0 30px rgba(2,6,23,0.6);padding:1rem}
+      .sidebar.open{transform:translateX(0)}
+      .toggle-settings{display:inline-flex;background:transparent;border:1px solid rgba(255,255,255,0.04);padding:.4rem .6rem;border-radius:8px;color:var(--muted)}
+      .panel{padding:.75rem}
+      #chat{height:56vh}
+      footer{padding:.6rem}
+      .controls{flex-direction:row}
+    }
+
+    /* Loading overlay */
+    .overlay{position:fixed;inset:0;background:linear-gradient(180deg, rgba(2,6,23,0.6), rgba(2,6,23,0.75));display:flex;align-items:center;justify-content:center;z-index:80;backdrop-filter:blur(2px);}
+    .loader{background:linear-gradient(90deg,#071733,#041122);padding:1rem 1.15rem;border-radius:10px;border:1px solid rgba(255,255,255,0.04);display:flex;gap:.8rem;align-items:center}
+    .spinner{width:40px;height:40px;border-radius:50%;border:4px solid rgba(255,255,255,0.08);border-top-color:var(--accent);animation:spin 1s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
   </style>
 </head>
 <body>
-  <div class="app" role="application" aria-label="Chatbot App">
+  <div class="app" role="application" aria-label="Jaxx AI">
     <header>
-      <h1>Chatbot App — Advanced</h1>
+      <h1><span class="brand-dot"></span> Jaxx AI</h1>
       <div class="meta">
         <small id="status">Mode: <span class="muted">Echo</span></small>
+        <button id="openSettings" class="toggle-settings" style="display:none">Settings</button>
       </div>
     </header>
 
@@ -82,7 +107,7 @@
         </div>
       </main>
 
-      <aside class="sidebar panel">
+      <aside class="sidebar panel" id="sidebar">
         <div class="section">
           <h3>Modes</h3>
           <div class="modes">
@@ -143,6 +168,17 @@
     </footer>
   </div>
 
+  <!-- Loading overlay -->
+  <div id="overlay" class="overlay" style="display:none">
+    <div class="loader" role="status" aria-live="polite">
+      <div class="spinner" aria-hidden="true"></div>
+      <div>
+        <div style="font-weight:600">Loading Jaxx AI…</div>
+        <div class="tiny muted">Preparing your chat experience</div>
+      </div>
+    </div>
+  </div>
+
   <script>
     // Basic advanced chatbot UI + small rule-based engine + localStorage persistence
     const chat = document.getElementById('chat');
@@ -154,6 +190,9 @@
     const savedEl = document.getElementById('saved');
     const modes = document.querySelectorAll('.mode');
     const status = document.getElementById('status');
+    const overlay = document.getElementById('overlay');
+    const sidebar = document.getElementById('sidebar');
+    const openSettings = document.getElementById('openSettings');
 
     let convo = []; // {role:'user'|'bot', text, ts}
     let mode = 'echo';
@@ -188,7 +227,7 @@
       convo.push(msg); render();
     }
 
-    function escapeHtml(unsafe){return unsafe.replace(/[&<>\"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]});}
+    function escapeHtml(unsafe){return unsafe.replace(/[&<>\\\"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[m]});}
 
     // Modes
     modes.forEach(btn=>btn.addEventListener('click',()=>{
@@ -196,6 +235,15 @@
       btn.classList.add('active');
       mode = btn.dataset.mode; status.innerHTML = 'Mode: <span class="muted">'+mode+'</span>';
     }));
+
+    // Mobile settings toggle
+    function updateMobileUI(){
+      const isMobile = window.matchMedia('(max-width:720px)').matches;
+      openSettings.style.display = isMobile ? 'inline-flex' : 'none';
+      if(!isMobile){ sidebar.classList.remove('open'); }
+    }
+    openSettings.addEventListener('click', ()=>{ sidebar.classList.toggle('open'); });
+    window.addEventListener('resize', updateMobileUI);
 
     // Composer actions
     function send(){
@@ -226,7 +274,7 @@
         if(/joke|funny/.test(t)) return appendMessage('bot', "Why did the developer go broke? Because he used up all his cache. 😄");
         if(/weather/.test(t)) return appendMessage('bot', "I can't access live weather in demo mode, but you could enable API mode and connect to a weather API.");
         // fallback: short reply
-        appendMessage('bot','I didn\'t quite get that. Try \"help\" or \"joke\".');
+        appendMessage('bot','I didn\\'t quite get that. Try \"help\" or \"joke\".');
       },400 + Math.random()*400);
     }
 
@@ -235,6 +283,7 @@
       const key = document.getElementById('api-key').value.trim();
       if(!url){ appendMessage('bot','API URL not set.'); return }
       showTyping();
+      showLoading("Contacting API...");
       try{
         const payload = {message:text, history: convo.slice(-10)};
         const headers = {'Content-Type':'application/json'};
@@ -245,9 +294,10 @@
         // expect {reply: '...'} or {choices:[{text:'...'}]}
         let reply = data.reply || (data.choices && data.choices[0] && (data.choices[0].text||data.choices[0].message?.content)) || JSON.stringify(data);
         hideTyping();
+        hideLoading();
         streamAppend('bot', reply);
       }catch(err){
-        hideTyping(); appendMessage('bot','API error: '+err.message);
+        hideTyping(); hideLoading(); appendMessage('bot','API error: '+err.message);
       }
     }
 
@@ -271,6 +321,12 @@
         if(i>=text.length){ clearInterval(tm); /* finalize */ b.innerHTML = escapeHtml(text)+"<div class='meta-line'>"+tsToShort(nowISO())+"</div>"; convo.push({role,text,ts:nowISO()}); updateCounts(); }
       }, speed);
     }
+
+    // Loading overlay helpers
+    function showLoading(msg){
+      if(overlay){ overlay.style.display='flex'; const txt = overlay.querySelector('.loader div > div'); if(txt) txt.textContent = msg || 'Loading Jaxx AI…'; }
+    }
+    function hideLoading(){ if(overlay){ overlay.style.display='none'; } }
 
     // Local storage
     document.getElementById('save').addEventListener('click', ()=>{
@@ -321,6 +377,8 @@
 
     // Helpers: load saved on start if present
     (function init(){
+      showLoading('Loading Jaxx AI…');
+      setTimeout(()=>{ hideLoading(); updateMobileUI(); }, 700);
       const s = localStorage.getItem(STORAGE_KEY); if(s){ savedEl.textContent = 'found'; /* don't auto-load to avoid surprising user */ }
       // populate rule defaults
       document.getElementById('rule-greeting').value = '';
