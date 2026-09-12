@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Chatbot App</title>
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;max-width:800px;margin:2rem auto;padding:1rem}
+    header{display:flex;align-items:center;gap:1rem}
+    #chat{border:1px solid #ddd;padding:1rem;height:400px;overflow:auto;background:#fafafa}
+    form{display:flex;gap:.5rem;margin-top:.5rem}
+    input[type="text"]{flex:1;padding:.5rem}
+    button{padding:.5rem 1rem}
+    .msg{margin:.25rem 0;padding:.5rem;border-radius:6px}
+    .user{background:#e6f7ff}
+    .bot{background:#f6ffed}
+  </style>
+</head>
+<body>
+  <header><h1>Chatbot App</h1></header>
+  <main>
+    <div id="chat" aria-live="polite"></div>
+    <form id="form" onsubmit="return false;">
+      <input id="input" type="text" placeholder="Type a message..." autocomplete="off" />
+      <button id="send">Send</button>
+    </form>
+  </main>
+  <script>
+    const chat=document.getElementById('chat');
+    const input=document.getElementById('input');
+    document.getElementById('send').addEventListener('click',send);
+    function append(text,cls){
+      const d=document.createElement('div');d.className='msg '+cls;d.textContent=text;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
+    }
+    function send(){
+      const v=input.value.trim(); if(!v) return;
+      append('You: '+v,'user'); input.value=''; // placeholder bot reply
+      setTimeout(()=>append('Bot: This is a placeholder reply.','bot'),500);
+    }
+  </script>
+</body>
+</html>
