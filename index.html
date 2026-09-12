@@ -3,40 +3,331 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Chatbot App</title>
+  <title>Chatbot App — Advanced</title>
   <style>
-    body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;max-width:800px;margin:2rem auto;padding:1rem}
-    header{display:flex;align-items:center;gap:1rem}
-    #chat{border:1px solid #ddd;padding:1rem;height:400px;overflow:auto;background:#fafafa}
-    form{display:flex;gap:.5rem;margin-top:.5rem}
-    input[type="text"]{flex:1;padding:.5rem}
-    button{padding:.5rem 1rem}
-    .msg{margin:.25rem 0;padding:.5rem;border-radius:6px}
-    .user{background:#e6f7ff}
-    .bot{background:#f6ffed}
+    :root{--bg:#0f1724;--card:#0b1220;--muted:#94a3b8;--accent:#06b6d4;--accent-2:#60a5fa}
+    *{box-sizing:border-box}
+    body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial; margin:0;background:linear-gradient(180deg,#071024 0%, #081226 100%);color:#e6eef6;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+    .app{width:100%;max-width:920px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:0.75rem;box-shadow:0 8px 30px rgba(2,6,23,0.6)}
+    header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1rem 0}
+    header h1{margin:0;font-size:1.1rem}
+    .meta{display:flex;gap:.5rem;align-items:center}
+    .meta small{color:var(--muted)}
+
+    .container{display:grid;grid-template-columns:1fr 320px;gap:1rem;padding:1rem}
+    @media (max-width:900px){.container{grid-template-columns:1fr}}
+
+    .panel{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));border-radius:8px;padding:1rem;border:1px solid rgba(255,255,255,0.03)}
+
+    /* Chat area */
+    #chat{height:60vh;min-height:320px;overflow:auto;padding:1rem;display:flex;flex-direction:column;gap:.5rem}
+    .bubble{max-width:78%;padding:.6rem .8rem;border-radius:12px;line-height:1.25}
+    .bubble.user{align-self:flex-end;background:linear-gradient(90deg,#0369a1,#06b6d4);color:white;border-bottom-right-radius:4px}
+    .bubble.bot{align-self:flex-start;background:linear-gradient(90deg,#0f1724,#071433);color:#dbeafe;border-bottom-left-radius:4px;border:1px solid rgba(255,255,255,0.02)}
+    .meta-line{font-size:.72rem;color:var(--muted);margin-top:.35rem}
+
+    /* Composer */
+    form.composer{display:flex;gap:.5rem;align-items:flex-end;margin-top:.75rem}
+    textarea#input{flex:1;padding:.6rem;border-radius:8px;border:1px solid rgba(255,255,255,0.04);min-height:56px;background:transparent;color:inherit;resize:vertical}
+    .controls{display:flex;flex-direction:column;gap:.5rem}
+    button{background:var(--accent);border:none;color:#012; padding:.5rem .75rem;border-radius:8px;cursor:pointer}
+    button.secondary{background:transparent;border:1px solid rgba(255,255,255,0.05);color:var(--muted)}
+
+    /* Sidebar */
+    .sidebar{display:flex;flex-direction:column;gap:.75rem}
+    .section h3{margin:.25rem 0;color:var(--muted);font-size:.85rem}
+    .modes{display:flex;gap:.5rem;flex-wrap:wrap}
+    .mode{padding:.45rem .6rem;border-radius:8px;background:rgba(255,255,255,0.02);cursor:pointer;border:1px solid transparent}
+    .mode.active{background:linear-gradient(90deg,var(--accent-2),var(--accent));color:#012;border-color:rgba(255,255,255,0.06)}
+    .small{font-size:.85rem}
+
+    footer{padding:0 1rem 1rem;display:flex;align-items:center;justify-content:space-between;color:var(--muted)}
+
+    .row{display:flex;gap:.5rem;align-items:center}
+    input[type="text"],select{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:.4rem .5rem;border-radius:8px;color:inherit}
+    .muted{color:var(--muted)}
+
+    .tiny{font-size:.8rem;color:var(--muted)}
+    .linklike{background:transparent;border:none;color:var(--accent);cursor:pointer}
+    .toolbar{display:flex;gap:.5rem}
+    pre.export{max-height:200px;overflow:auto;background:rgba(0,0,0,0.35);padding:.5rem;border-radius:6px}
+
   </style>
 </head>
 <body>
-  <header><h1>Chatbot App</h1></header>
-  <main>
-    <div id="chat" aria-live="polite"></div>
-    <form id="form" onsubmit="return false;">
-      <input id="input" type="text" placeholder="Type a message..." autocomplete="off" />
-      <button id="send">Send</button>
-    </form>
-  </main>
+  <div class="app" role="application" aria-label="Chatbot App">
+    <header>
+      <h1>Chatbot App — Advanced</h1>
+      <div class="meta">
+        <small id="status">Mode: <span class="muted">Echo</span></small>
+      </div>
+    </header>
+
+    <div class="container">
+      <main class="panel">
+        <div id="chat" aria-live="polite"></div>
+
+        <form class="composer" id="form" onsubmit="return false;">
+          <textarea id="input" placeholder="Type a message — Enter to send, Shift+Enter for newline"></textarea>
+          <div class="controls">
+            <button id="send">Send</button>
+            <button id="clear" type="button" class="secondary">Clear</button>
+          </div>
+        </form>
+
+        <div class="row" style="margin-top:.5rem;gap:1rem">
+          <div class="tiny">Messages: <span id="count">0</span></div>
+          <div class="tiny">Words: <span id="words">0</span></div>
+          <div class="tiny">Saved: <span id="saved">—</span></div>
+        </div>
+      </main>
+
+      <aside class="sidebar panel">
+        <div class="section">
+          <h3>Modes</h3>
+          <div class="modes">
+            <button class="mode active" data-mode="echo">Echo</button>
+            <button class="mode" data-mode="rules">Rule-based</button>
+            <button class="mode" data-mode="api">API</button>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Rule responses</h3>
+          <small class="muted">(used in Rule-based mode)</small>
+          <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem">
+            <input id="rule-greeting" placeholder="Greeting response (default: Hello!)" type="text">
+            <input id="rule-help" placeholder="Help response (default: I can help)" type="text">
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>API mode</h3>
+          <small class="muted">(use a server endpoint that proxies LLM requests; no keys stored)</small>
+          <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem">
+            <input id="api-url" placeholder="https://your-api.example.com/chat" type="text">
+            <input id="api-key" placeholder="Optional header key (X-Api-Key: ...)" type="text">
+            <button id="test-api" class="secondary">Test API</button>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Conversation</h3>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <button id="save" class="secondary">Save</button>
+            <button id="export" class="secondary">Export</button>
+            <button id="importBtn" class="secondary">Import</button>
+            <button id="load" class="secondary">Load</button>
+            <button id="clearStorage" class="secondary">Clear Storage</button>
+          </div>
+          <input id="fileInput" type="file" style="display:none">
+        </div>
+
+        <div class="section">
+          <h3>Quick actions</h3>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <button id="example1" class="secondary">Example: Intro</button>
+            <button id="example2" class="secondary">Example: Ask time</button>
+            <button id="example3" class="secondary">Example: Joke</button>
+          </div>
+        </div>
+
+      </aside>
+    </div>
+
+    <footer>
+      <div class="tiny">Local demo — no external AI keys included. To connect to an LLM, enter an API URL in sidebar and use API mode.</div>
+      <div class="toolbar">
+        <button id="exportText" class="linklike">Export Text</button>
+      </div>
+    </footer>
+  </div>
+
   <script>
-    const chat=document.getElementById('chat');
-    const input=document.getElementById('input');
-    document.getElementById('send').addEventListener('click',send);
-    function append(text,cls){
-      const d=document.createElement('div');d.className='msg '+cls;d.textContent=text;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
+    // Basic advanced chatbot UI + small rule-based engine + localStorage persistence
+    const chat = document.getElementById('chat');
+    const input = document.getElementById('input');
+    const sendBtn = document.getElementById('send');
+    const clearBtn = document.getElementById('clear');
+    const countEl = document.getElementById('count');
+    const wordsEl = document.getElementById('words');
+    const savedEl = document.getElementById('saved');
+    const modes = document.querySelectorAll('.mode');
+    const status = document.getElementById('status');
+
+    let convo = []; // {role:'user'|'bot', text, ts}
+    let mode = 'echo';
+    const STORAGE_KEY = 'chatbot_app_v1';
+
+    // Default rule responses
+    const ruleDefaults = {greeting: 'Hello! How can I help you today?', help: 'I can answer simple questions, tell the time, or tell jokes.'};
+
+    // Utilities
+    function nowISO(){return new Date().toISOString()}
+    function tsToShort(iso){const d=new Date(iso);return d.toLocaleString()}
+
+    function render(){
+      chat.innerHTML='';
+      convo.forEach(m=>{
+        const b=document.createElement('div');b.className='bubble '+(m.role==='user'?'user':'bot');
+        b.innerHTML=escapeHtml(m.text)+"<div class='meta-line'>"+tsToShort(m.ts)+"</div>";
+        chat.appendChild(b);
+      });
+      updateCounts();
+      chat.scrollTop = chat.scrollHeight;
     }
+
+    function updateCounts(){
+      countEl.textContent = convo.length;
+      const words = convo.map(c=>c.text.split(/\s+/).filter(Boolean).length).reduce((a,b)=>a+b,0);
+      wordsEl.textContent = words;
+    }
+
+    function appendMessage(role,text){
+      const msg = {role, text, ts: nowISO()};
+      convo.push(msg); render();
+    }
+
+    function escapeHtml(unsafe){return unsafe.replace(/[&<>\"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]});}
+
+    // Modes
+    modes.forEach(btn=>btn.addEventListener('click',()=>{
+      modes.forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      mode = btn.dataset.mode; status.innerHTML = 'Mode: <span class="muted">'+mode+'</span>';
+    }));
+
+    // Composer actions
     function send(){
-      const v=input.value.trim(); if(!v) return;
-      append('You: '+v,'user'); input.value=''; // placeholder bot reply
-      setTimeout(()=>append('Bot: This is a placeholder reply.','bot'),500);
+      const text = input.value.trim(); if(!text) return;
+      appendMessage('user', text);
+      input.value='';
+      // handle by mode
+      if(mode==='echo') return respondEcho(text);
+      if(mode==='rules') return respondRuleBased(text);
+      if(mode==='api') return respondApi(text);
     }
+
+    function respondEcho(text){
+      showTyping();
+      setTimeout(()=>{hideTyping(); appendMessage('bot', 'Echo: '+text)}, 500 + Math.random()*500);
+    }
+
+    function respondRuleBased(text){
+      showTyping();
+      setTimeout(()=>{
+        hideTyping();
+        const t = text.toLowerCase();
+        const greeting = document.getElementById('rule-greeting').value || ruleDefaults.greeting;
+        const help = document.getElementById('rule-help').value || ruleDefaults.help;
+        if(/hello|hi|hey\b/.test(t)) return appendMessage('bot', greeting);
+        if(/help|what can you do|assist/.test(t)) return appendMessage('bot', help);
+        if(/time|what time/.test(t)) return appendMessage('bot', 'Current time: '+new Date().toLocaleString());
+        if(/joke|funny/.test(t)) return appendMessage('bot', "Why did the developer go broke? Because he used up all his cache. 😄");
+        if(/weather/.test(t)) return appendMessage('bot', "I can't access live weather in demo mode, but you could enable API mode and connect to a weather API.");
+        // fallback: short reply
+        appendMessage('bot','I didn\'t quite get that. Try \"help\" or \"joke\".');
+      },400 + Math.random()*400);
+    }
+
+    async function respondApi(text){
+      const url = document.getElementById('api-url').value.trim();
+      const key = document.getElementById('api-key').value.trim();
+      if(!url){ appendMessage('bot','API URL not set.'); return }
+      showTyping();
+      try{
+        const payload = {message:text, history: convo.slice(-10)};
+        const headers = {'Content-Type':'application/json'};
+        if(key) headers['X-Api-Key'] = key;
+        const res = await fetch(url, {method:'POST',headers,body:JSON.stringify(payload)});
+        if(!res.ok) throw new Error('API error '+res.status);
+        const data = await res.json();
+        // expect {reply: '...'} or {choices:[{text:'...'}]}
+        let reply = data.reply || (data.choices && data.choices[0] && (data.choices[0].text||data.choices[0].message?.content)) || JSON.stringify(data);
+        hideTyping();
+        streamAppend('bot', reply);
+      }catch(err){
+        hideTyping(); appendMessage('bot','API error: '+err.message);
+      }
+    }
+
+    // Typing indicator
+    let typingEl = null;
+    function showTyping(){
+      typingEl = document.createElement('div'); typingEl.className='bubble bot'; typingEl.id='typing';
+      typingEl.innerHTML = '<em>Bot is typing</em>';
+      chat.appendChild(typingEl); chat.scrollTop = chat.scrollHeight;
+    }
+    function hideTyping(){ if(typingEl && typingEl.parentNode) typingEl.parentNode.removeChild(typingEl); typingEl=null; }
+
+    // Streamed append: reveals text gradually
+    function streamAppend(role, text){
+      const b=document.createElement('div');b.className='bubble '+(role==='user'?'user':'bot');
+      chat.appendChild(b); chat.scrollTop = chat.scrollHeight;
+      let i=0; const speed=12 + Math.random()*18; const tm = setInterval(()=>{
+        i+=Math.ceil(Math.random()*3);
+        b.innerHTML = escapeHtml(text.slice(0,i)) + (i<text.length?'<span class="muted">▌</span>':'') + "<div class='meta-line'>"+tsToShort(nowISO())+"</div>";
+        chat.scrollTop = chat.scrollHeight;
+        if(i>=text.length){ clearInterval(tm); /* finalize */ b.innerHTML = escapeHtml(text)+"<div class='meta-line'>"+tsToShort(nowISO())+"</div>"; convo.push({role,text,ts:nowISO()}); updateCounts(); }
+      }, speed);
+    }
+
+    // Local storage
+    document.getElementById('save').addEventListener('click', ()=>{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(convo)); savedEl.textContent = new Date().toLocaleTimeString();
+    });
+    document.getElementById('load').addEventListener('click', ()=>{
+      const s = localStorage.getItem(STORAGE_KEY); if(!s) return alert('No saved conversation'); convo = JSON.parse(s); render(); savedEl.textContent='loaded';
+    });
+    document.getElementById('clearStorage').addEventListener('click', ()=>{ if(confirm('Clear saved conversation?')){ localStorage.removeItem(STORAGE_KEY); savedEl.textContent='—'; convo=[]; render(); } });
+
+    // Export / Import
+    document.getElementById('export').addEventListener('click', ()=>{
+      const blob = new Blob([JSON.stringify(convo, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='conversation.json'; a.click(); URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('exportText').addEventListener('click', ()=>{
+      const text = convo.map(c=> (c.role.toUpperCase()+': '+c.text+' ('+new Date(c.ts).toLocaleString()+')')).join('\n\n');
+      const blob = new Blob([text], {type:'text/plain'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='conversation.txt'; a.click(); URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('importBtn').addEventListener('click', ()=>document.getElementById('fileInput').click());
+    document.getElementById('fileInput').addEventListener('change',(e)=>{
+      const f = e.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = ()=>{ try{ convo = JSON.parse(r.result); render(); alert('Imported.'); }catch(err){ alert('Import failed: '+err.message)} }; r.readAsText(f);
+    });
+
+    // Quick examples
+    document.getElementById('example1').addEventListener('click', ()=>{ input.value='Hi, I am new here. Can you introduce yourself?'; send(); });
+    document.getElementById('example2').addEventListener('click', ()=>{ input.value='What time is it?'; send(); });
+    document.getElementById('example3').addEventListener('click', ()=>{ input.value='Tell me a joke'; send(); });
+
+    // Test API
+    document.getElementById('test-api').addEventListener('click', async ()=>{
+      const url = document.getElementById('api-url').value.trim(); if(!url) return alert('Enter API URL');
+      try{ const res = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:'ping'})}); if(!res.ok) throw new Error(res.status); const data = await res.json(); alert('API responded: '+JSON.stringify(data).slice(0,200)); }catch(err){ alert('Test failed: '+err.message) }
+    });
+
+    // Clear conversation
+    clearBtn.addEventListener('click', ()=>{ if(confirm('Clear conversation?')){ convo=[]; render(); }});
+
+    // Keyboard: Enter send, Shift+Enter newline
+    input.addEventListener('keydown', (e)=>{
+      if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); send(); }
+    });
+
+    // Send button
+    sendBtn.addEventListener('click', send);
+
+    // Helpers: load saved on start if present
+    (function init(){
+      const s = localStorage.getItem(STORAGE_KEY); if(s){ savedEl.textContent = 'found'; /* don't auto-load to avoid surprising user */ }
+      // populate rule defaults
+      document.getElementById('rule-greeting').value = '';
+      document.getElementById('rule-help').value = '';
+      render();
+    })();
+
   </script>
 </body>
 </html>
