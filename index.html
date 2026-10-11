@@ -4,34 +4,34 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Jaxx AI — Mobile</title>
-  <meta name="theme-color" content="#071326" />
+  <meta name="theme-color" content="#6D28D9" />
   <style>
-    :root{--bg:#031123;--surface:#0b1724;--muted:#94a3b8;--accent:#06b6d4;--accent-2:#60a5fa;--card:#0e1a2b}
+    :root{--bg:#0f0520;--surface:#1a0f2e;--muted:#a78bfa;--accent:#c084fc;--accent-2:#a855f7;--card:#2d1b4e;--primary:#9333ea;--secondary:#c084fc}
     *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;color:#e6eef6;background:linear-gradient(180deg,#031123 0%,#071326 100%)}
+    html,body{height:100%;margin:0;font-family:'Poppins','Inter',system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;color:#f3e8ff;background:linear-gradient(135deg,#0f0520 0%,#1a0f2e 50%,#2d1b4e 100%)}
 
     /* App phone frame */
-    .phone{width:100%;max-width:420px;margin:1.25rem auto;border-radius:28px;overflow:hidden;background:linear-gradient(180deg,var(--surface),#071226);box-shadow:0 20px 60px rgba(2,6,23,0.6);min-height:840px;display:flex;flex-direction:column;position:relative}
+    .phone{width:100%;max-width:420px;margin:1.25rem auto;border-radius:32px;overflow:hidden;background:linear-gradient(135deg,var(--surface),#0f0520);box-shadow:0 40px 100px rgba(147,51,234,0.4);min-height:840px;display:flex;flex-direction:column;position:relative;border:2px solid rgba(147,51,234,0.3)}
 
     /* ===== ENHANCED SPLASH / START SCREEN ===== */
     .splash{
       position:absolute;
       inset:0;
-      background:linear-gradient(135deg, #020812 0%, #0a1628 50%, #061426 100%);
+      background:linear-gradient(135deg, #0f0520 0%, #1a0f2e 25%, #2d1b4e 50%, #1a0f2e 75%, #0f0520 100%);
       display:flex;
       align-items:center;
       justify-content:center;
       flex-direction:column;
       z-index:200;
       padding:20px;
-      transition:all 0.6s cubic-bezier(0.4,0,0.2,1);
+      transition:all 0.8s cubic-bezier(0.4,0,0.2,1);
       opacity:1;
       transform:scale(1);
     }
 
     .splash.hidden{
       opacity:0;
-      transform:scale(1.05) translateY(-20px);
+      transform:scale(1.1) translateY(-40px);
       pointer-events:none;
     }
 
@@ -41,32 +41,35 @@
       content:'';
       position:absolute;
       border-radius:50%;
-      opacity:0.15;
-      animation:float 8s ease-in-out infinite;
+      opacity:0.25;
+      animation:float 12s ease-in-out infinite;
+      filter:blur(60px);
     }
 
     .splash::before {
-      width:300px;
-      height:300px;
-      background:radial-gradient(circle, #60a5fa, transparent);
-      top:-100px;
-      left:-100px;
-      animation-duration:12s;
+      width:400px;
+      height:400px;
+      background:radial-gradient(circle, #a855f7, #7c3aed);
+      top:-150px;
+      left:-150px;
+      animation-duration:15s;
+      box-shadow:0 0 100px #a855f7;
     }
 
     .splash::after {
-      width:250px;
-      height:250px;
-      background:radial-gradient(circle, #06b6d4, transparent);
-      bottom:-80px;
-      right:-80px;
-      animation-duration:14s;
-      animation-delay:2s;
+      width:350px;
+      height:350px;
+      background:radial-gradient(circle, #c084fc, #a855f7);
+      bottom:-120px;
+      right:-120px;
+      animation-duration:18s;
+      animation-delay:3s;
+      box-shadow:0 0 80px #c084fc;
     }
 
     @keyframes float {
       0%, 100% { transform:translate(0, 0) scale(1); }
-      50% { transform:translate(30px, 30px) scale(1.1); }
+      50% { transform:translate(50px, 50px) scale(1.15); }
     }
 
     .splash-content {
@@ -76,14 +79,14 @@
       display:flex;
       flex-direction:column;
       align-items:center;
-      gap:20px;
-      animation:slideUp 0.8s cubic-bezier(0.34,1.56,0.64,1);
+      gap:24px;
+      animation:slideUp 1s cubic-bezier(0.34,1.56,0.64,1);
     }
 
     @keyframes slideUp {
       from {
         opacity:0;
-        transform:translateY(30px);
+        transform:translateY(50px);
       }
       to {
         opacity:1;
@@ -91,28 +94,43 @@
       }
     }
 
-    /* Logo styling - premium and modern */
+    /* Logo styling - JAXX AI Premium */
     .splash .logo {
-      width:140px;
-      height:140px;
-      border-radius:32px;
-      background:linear-gradient(135deg, #60a5fa 0%, #06b6d4 50%, #0ea5e9 100%);
+      width:160px;
+      height:160px;
+      border-radius:40px;
+      background:linear-gradient(135deg, #a855f7 0%, #c084fc 50%, #e9d5ff 100%);
       display:flex;
       align-items:center;
       justify-content:center;
-      font-size:60px;
-      font-weight:800;
-      color:#021;
-      box-shadow:0 20px 60px rgba(6,182,212,0.25), 0 0 40px rgba(96,165,250,0.15);
-      animation:logoScale 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.2s both;
-      backdrop-filter:blur(10px);
-      border:2px solid rgba(255,255,255,0.1);
+      font-size:70px;
+      font-weight:900;
+      color:#0f0520;
+      box-shadow:0 30px 80px rgba(168,85,247,0.4), 0 0 60px rgba(192,132,252,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+      animation:logoScale 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.2s both;
+      backdrop-filter:blur(20px);
+      border:3px solid rgba(255,255,255,0.15);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .splash .logo::before {
+      content:'';
+      position:absolute;
+      inset:0;
+      background:linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+      animation:shine 3s infinite;
+    }
+
+    @keyframes shine {
+      0% { transform:translateX(-100%); }
+      100% { transform:translateX(100%); }
     }
 
     @keyframes logoScale {
       from {
         opacity:0;
-        transform:scale(0.3) rotateY(-20deg);
+        transform:scale(0.2) rotateY(-30deg);
       }
       to {
         opacity:1;
@@ -127,42 +145,44 @@
     @keyframes pulse {
       0%, 100% {
         transform:scale(1);
-        box-shadow:0 20px 60px rgba(6,182,212,0.25), 0 0 40px rgba(96,165,250,0.15);
+        box-shadow:0 30px 80px rgba(168,85,247,0.4), 0 0 60px rgba(192,132,252,0.3);
       }
       50% {
-        transform:scale(1.08);
-        box-shadow:0 20px 80px rgba(6,182,212,0.35), 0 0 60px rgba(96,165,250,0.25);
+        transform:scale(1.12);
+        box-shadow:0 30px 120px rgba(168,85,247,0.6), 0 0 80px rgba(192,132,252,0.5);
       }
     }
 
-    /* Text styling */
+    /* JAXX AI Branding */
     .splash h2 {
       margin:0;
-      font-size:28px;
-      font-weight:700;
-      letter-spacing:-0.5px;
-      opacity:0.98;
-      background:linear-gradient(135deg, #e6eef6, #c7d2e0);
+      font-size:42px;
+      font-weight:900;
+      letter-spacing:-1.5px;
+      opacity:1;
+      background:linear-gradient(135deg, #f3e8ff, #e9d5ff, #d8b4fe);
       -webkit-background-clip:text;
       -webkit-text-fill-color:transparent;
       background-clip:text;
-      animation:textSlide 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.3s both;
+      animation:textSlide 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.3s both;
+      text-shadow:0 10px 30px rgba(168,85,247,0.2);
     }
 
     .splash p {
       margin:0;
-      color:var(--muted);
-      font-size:15px;
-      line-height:1.6;
-      max-width:280px;
-      opacity:0.85;
-      animation:textSlide 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.4s both;
+      color:#d8b4fe;
+      font-size:16px;
+      line-height:1.7;
+      max-width:300px;
+      opacity:0.95;
+      animation:textSlide 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.4s both;
+      font-weight:500;
     }
 
     @keyframes textSlide {
       from {
         opacity:0;
-        transform:translateY(15px);
+        transform:translateY(20px);
       }
       to {
         opacity:1;
@@ -170,28 +190,29 @@
       }
     }
 
-    /* Start button - premium interactive */
+    /* Start button - PREMIUM */
     .splash .start-btn {
-      margin-top:8px;
-      padding:14px 32px;
-      border-radius:14px;
-      border:none;
-      background:linear-gradient(135deg, #06b6d4, #0ea5e9);
-      color:#021;
-      font-weight:700;
-      font-size:15px;
-      box-shadow:0 12px 30px rgba(6,182,212,0.3), 0 4px 15px rgba(14,165,233,0.2);
-      transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+      margin-top:12px;
+      padding:16px 40px;
+      border-radius:16px;
+      border:2px solid transparent;
+      background:linear-gradient(135deg, #a855f7, #c084fc);
+      color:#0f0520;
+      font-weight:800;
+      font-size:16px;
+      box-shadow:0 20px 50px rgba(168,85,247,0.4), 0 0 40px rgba(192,132,252,0.2);
+      transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);
       cursor:pointer;
       position:relative;
       overflow:hidden;
-      animation:buttonSlide 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.5s both;
+      animation:buttonSlide 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.5s both;
+      letter-spacing:0.5px;
     }
 
     @keyframes buttonSlide {
       from {
         opacity:0;
-        transform:translateY(20px);
+        transform:translateY(30px);
       }
       to {
         opacity:1;
@@ -206,13 +227,14 @@
       left:-100%;
       width:100%;
       height:100%;
-      background:linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-      transition:left 0.5s;
+      background:linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition:left 0.6s;
     }
 
     .splash .start-btn:hover {
-      transform:translateY(-3px);
-      box-shadow:0 18px 40px rgba(6,182,212,0.4), 0 6px 20px rgba(14,165,233,0.3);
+      transform:translateY(-5px);
+      box-shadow:0 30px 70px rgba(168,85,247,0.5), 0 0 60px rgba(192,132,252,0.3);
+      border-color:rgba(255,255,255,0.2);
     }
 
     .splash .start-btn:hover::before {
@@ -220,53 +242,56 @@
     }
 
     .splash .start-btn:active {
-      transform:translateY(-1px);
-      box-shadow:0 8px 20px rgba(6,182,212,0.3);
+      transform:translateY(-2px);
+      box-shadow:0 15px 40px rgba(168,85,247,0.4);
     }
 
     /* Tip / Status text */
     .splash .tip {
-      margin-top:16px;
-      font-size:12px;
-      color:var(--muted);
-      opacity:0.7;
+      margin-top:20px;
+      font-size:13px;
+      color:#d8b4fe;
+      opacity:0.8;
       display:flex;
       align-items:center;
-      gap:6px;
-      animation:textSlide 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.6s both;
+      gap:8px;
+      animation:textSlide 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.6s both;
+      font-weight:500;
     }
 
     .splash .tip::before {
-      content:'💡';
-      font-size:14px;
+      content:'⚡';
+      font-size:16px;
     }
 
     /* Feature badges on splash */
     .splash .features {
       display:flex;
-      gap:12px;
-      margin-top:16px;
+      gap:10px;
+      margin-top:18px;
       justify-content:center;
       flex-wrap:wrap;
-      animation:textSlide 0.6s cubic-bezier(0.34,1.56,0.64,1) 0.7s both;
+      animation:textSlide 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.7s both;
     }
 
     .splash .badge {
-      background:rgba(6,182,212,0.15);
-      border:1px solid rgba(6,182,212,0.3);
-      border-radius:20px;
-      padding:6px 12px;
-      font-size:11px;
-      font-weight:600;
-      color:#06b6d4;
-      backdrop-filter:blur(10px);
+      background:linear-gradient(135deg, rgba(168,85,247,0.2), rgba(192,132,252,0.1));
+      border:1.5px solid rgba(168,85,247,0.4);
+      border-radius:24px;
+      padding:8px 14px;
+      font-size:12px;
+      font-weight:700;
+      color:#e9d5ff;
+      backdrop-filter:blur(20px);
+      box-shadow:0 8px 25px rgba(168,85,247,0.15);
+      letter-spacing:0.3px;
     }
 
-    .topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:linear-gradient(90deg,rgba(255,255,255,0.015),transparent);backdrop-filter:blur(6px)}
-    .brand{display:flex;gap:10px;align-items:center}
-    .brand-dot{width:14px;height:14px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
-    .brand h1{font-size:18px;margin:0;letter-spacing:0.2px}
-    .tiny-muted{font-size:12px;color:var(--muted)}
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:linear-gradient(90deg,rgba(168,85,247,0.1),rgba(192,132,252,0.05));backdrop-filter:blur(10px);border-bottom:1px solid rgba(168,85,247,0.2)}
+    .brand{display:flex;gap:12px;align-items:center}
+    .brand-dot{width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg, #a855f7, #c084fc);box-shadow:0 0 20px #a855f7}
+    .brand h1{font-size:20px;margin:0;letter-spacing:-0.3px;font-weight:800;background:linear-gradient(135deg, #f3e8ff, #e9d5ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .tiny-muted{font-size:12px;color:#d8b4fe;font-weight:600}
 
     .shell{flex:1;display:grid;grid-template-columns:1fr;gap:0}
     @media(min-width:800px){.shell{grid-template-columns:280px 1fr}}
@@ -275,54 +300,54 @@
     .view{display:none;height:100%;opacity:0;transform:translateY(6px);transition:opacity .32s ease,transform .32s cubic-bezier(.2,.9,.2,1)}
     .view.active{display:block;opacity:1;transform:none}
 
-    .list-panel{background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);padding:10px;border-right:1px solid rgba(255,255,255,0.02);display:flex;flex-direction:column;gap:8px;height:100%}
+    .list-panel{background:linear-gradient(180deg,rgba(168,85,247,0.05),rgba(192,132,252,0.02));padding:10px;border-right:1px solid rgba(168,85,247,0.2);display:flex;flex-direction:column;gap:8px;height:100%}
     .list-search{display:flex;gap:8px;padding:8px}
-    .search{flex:1;padding:8px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit;transition:box-shadow .18s ease}
-    .search:focus{box-shadow:0 8px 20px rgba(6,182,212,0.06);outline:none}
-    .new-chat{background:var(--accent);color:#021;border:none;padding:8px 10px;border-radius:10px}
+    .search{flex:1;padding:10px;border-radius:12px;border:1.5px solid rgba(168,85,247,0.3);background:rgba(168,85,247,0.08);color:inherit;transition:all .18s ease}
+    .search:focus{box-shadow:0 0 20px rgba(168,85,247,0.3);outline:none;background:rgba(168,85,247,0.12)}
+    .new-chat{background:linear-gradient(135deg, #a855f7, #c084fc);color:#0f0520;border:none;padding:10px 12px;border-radius:12px;font-weight:700}
 
-    .convo-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;cursor:pointer;transition:transform .12s ease,background .12s ease}
-    .convo-item:hover{transform:translateX(6px);background:rgba(255,255,255,0.01)}
-    .avatar{width:40px;height:40px;border-radius:10px;background:linear-gradient(90deg,var(--accent-2),var(--accent));display:flex;align-items:center;justify-content:center;font-weight:700;color:#021}
+    .convo-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;cursor:pointer;transition:all .12s ease;border-left:3px solid transparent}
+    .convo-item:hover{transform:translateX(6px);background:rgba(168,85,247,0.1);border-left-color:#a855f7}
+    .avatar{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg, #c084fc, #a855f7);display:flex;align-items:center;justify-content:center;font-weight:800;color:#0f0520}
     .convo-meta{flex:1;display:flex;flex-direction:column}
-    .convo-meta .title{font-weight:600}
-    .convo-meta .sub{font-size:12px;color:var(--muted);margin-top:4px}
+    .convo-meta .title{font-weight:700;color:#f3e8ff}
+    .convo-meta .sub{font-size:12px;color:#d8b4fe;margin-top:4px}
 
     .chat-panel{display:flex;flex-direction:column;height:100%}
     .chat-window{flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
 
     /* message animations */
-    .bubble{max-width:78%;padding:10px 12px;border-radius:14px;line-height:1.3;word-break:break-word;opacity:0;transform:translateY(8px);transition:opacity .28s ease,transform .28s cubic-bezier(.2,.9,.2,1)}
+    .bubble{max-width:78%;padding:12px 14px;border-radius:16px;line-height:1.4;word-break:break-word;opacity:0;transform:translateY(8px);transition:opacity .28s ease,transform .28s cubic-bezier(.2,.9,.2,1)}
     .bubble.show{opacity:1;transform:none}
-    .bubble.user{align-self:flex-end;background:linear-gradient(90deg,#0369a1,#06b6d4);color:white;border-bottom-right-radius:6px}
-    .bubble.bot{align-self:flex-start;background:linear-gradient(90deg,#071426,#0b1730);color:#dbeafe;border:1px solid rgba(255,255,255,0.02);border-bottom-left-radius:6px}
-    .meta-line{font-size:11px;color:var(--muted);margin-top:6px}
+    .bubble.user{align-self:flex-end;background:linear-gradient(135deg, #a855f7, #c084fc);color:#f3e8ff;border-bottom-right-radius:6px;font-weight:600}
+    .bubble.bot{align-self:flex-start;background:linear-gradient(135deg, #2d1b4e, #1a0f2e);color:#e9d5ff;border:1.5px solid rgba(168,85,247,0.3);border-bottom-left-radius:6px}
+    .meta-line{font-size:11px;color:#d8b4fe;margin-top:6px;opacity:0.7}
 
-    .composer-bar{display:flex;gap:8px;padding:12px;border-top:1px solid rgba(255,255,255,0.02);background:linear-gradient(180deg,transparent,rgba(0,0,0,0.12))}
-    .input{flex:1;padding:12px;border-radius:14px;border:1px solid rgba(255,255,255,0.04);background:rgba(255,255,255,0.02);resize:none;color:inherit}
-    .send-btn{background:var(--accent);color:#012;border:none;padding:10px 12px;border-radius:12px}
-    .attach{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:8px;border-radius:10px;color:var(--muted)}
+    .composer-bar{display:flex;gap:8px;padding:12px;border-top:1px solid rgba(168,85,247,0.2);background:linear-gradient(180deg,rgba(168,85,247,0.05),rgba(192,132,252,0.02))}
+    .input{flex:1;padding:12px;border-radius:14px;border:1.5px solid rgba(168,85,247,0.3);background:rgba(168,85,247,0.08);resize:none;color:inherit}
+    .send-btn{background:linear-gradient(135deg, #a855f7, #c084fc);color:#0f0520;border:none;padding:10px 14px;border-radius:12px;font-weight:700}
+    .attach{background:transparent;border:1.5px solid rgba(168,85,247,0.3);padding:8px;border-radius:10px;color:#d8b4fe}
 
-    .bottom-nav{display:flex;justify-content:space-around;padding:8px;border-top:1px solid rgba(255,255,255,0.02);background:linear-gradient(180deg,rgba(0,0,0,0.06),transparent)}
-    .nav-btn{display:flex;flex-direction:column;align-items:center;font-size:12px;color:var(--muted);gap:6px;padding:6px}
-    .nav-btn.active{color:var(--accent)}
+    .bottom-nav{display:flex;justify-content:space-around;padding:8px;border-top:1px solid rgba(168,85,247,0.2);background:linear-gradient(180deg,rgba(168,85,247,0.05),transparent)}
+    .nav-btn{display:flex;flex-direction:column;align-items:center;font-size:12px;color:#d8b4fe;gap:6px;padding:6px;font-weight:600}
+    .nav-btn.active{color:#f3e8ff}
 
     .settings-panel{padding:12px;display:flex;flex-direction:column;gap:10px}
     .row{display:flex;gap:8px;align-items:center}
 
-    .modal{position:fixed;inset:0;background:linear-gradient(180deg,rgba(2,6,23,0.75),rgba(2,6,23,0.85));display:flex;align-items:center;justify-content:center;z-index:80}
-    .modal-card{width:92%;max-width:420px;background:var(--card);border-radius:16px;padding:12px;border:1px solid rgba(255,255,255,0.03)}
+    .modal{position:fixed;inset:0;background:linear-gradient(180deg,rgba(15,5,32,0.8),rgba(26,15,46,0.9));display:flex;align-items:center;justify-content:center;z-index:80}
+    .modal-card{width:92%;max-width:420px;background:linear-gradient(135deg, rgba(168,85,247,0.15), rgba(192,132,252,0.1));border-radius:16px;padding:12px;border:1.5px solid rgba(168,85,247,0.3)}
 
-    .onboard-overlay{position:fixed;inset:0;z-index:300;background:linear-gradient(180deg,rgba(2,6,23,0.6),rgba(2,6,23,0.85));display:flex;align-items:center;justify-content:center;padding:16px}
-    .onboard-card{width:92%;max-width:420px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:14px;padding:16px;border:1px solid rgba(255,255,255,0.04);text-align:center}
+    .onboard-overlay{position:fixed;inset:0;z-index:300;background:linear-gradient(180deg,rgba(15,5,32,0.7),rgba(26,15,46,0.9));display:flex;align-items:center;justify-content:center;padding:16px}
+    .onboard-card{width:92%;max-width:420px;background:linear-gradient(135deg, rgba(168,85,247,0.15), rgba(192,132,252,0.1));border-radius:16px;padding:16px;border:1.5px solid rgba(168,85,247,0.3);text-align:center}
     .onboard-step{min-height:110px}
     .onboard-controls{display:flex;justify-content:space-between;margin-top:12px}
-    .onboard-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.08);margin:0 6px}
-    .onboard-dot.active{background:var(--accent)}
+    .onboard-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:rgba(168,85,247,0.3);margin:0 6px}
+    .onboard-dot.active{background:linear-gradient(135deg, #a855f7, #c084fc)}
 
-    .version-badge{position:absolute;left:12px;bottom:12px;padding:6px 10px;border-radius:10px;background:rgba(0,0,0,0.35);color:var(--muted);font-size:12px}
+    .version-badge{position:absolute;left:12px;bottom:12px;padding:8px 12px;border-radius:12px;background:rgba(168,85,247,0.2);color:#d8b4fe;font-size:11px;border:1px solid rgba(168,85,247,0.4);font-weight:600}
 
-    .muted{color:var(--muted)}
+    .muted{color:#d8b4fe}
     .hidden{display:none}
 
   </style>
@@ -330,19 +355,19 @@
 <body>
   <div class="phone" role="application" aria-label="Jaxx AI mobile app">
 
-    <!-- splash / startup screen - ENHANCED -->
+    <!-- splash / startup screen - JAXX AI BRANDED -->
     <div id="splash" class="splash" aria-hidden="false">
       <div class="splash-content">
         <div class="logo">✨</div>
-        <h2>Jaxx AI</h2>
-        <p>Your smart mobile AI assistant — instant, private, and powerful</p>
-        <button id="startBtn" class="start-btn">Get Started</button>
+        <h2>JAXX AI</h2>
+        <p>Your intelligent mobile companion — instant, secure, and incredible</p>
+        <button id="startBtn" class="start-btn">Launch App</button>
         <div class="features">
-          <div class="badge">⚡ Fast</div>
-          <div class="badge">🔒 Private</div>
-          <div class="badge">🎯 Smart</div>
+          <div class="badge">⚡ Ultra-Fast</div>
+          <div class="badge">🔐 Encrypted</div>
+          <div class="badge">🧠 Intelligent</div>
         </div>
-        <div class="tip">Pro tip: Open Settings to connect your LLM proxy</div>
+        <div class="tip">Connect your API in Settings to get started</div>
       </div>
     </div>
 
@@ -350,8 +375,8 @@
       <div class="brand">
         <div class="brand-dot" aria-hidden="true"></div>
         <div>
-          <h1>Jaxx AI</h1>
-          <div class="tiny-muted">Smart mobile assistant</div>
+          <h1>JAXX AI</h1>
+          <div class="tiny-muted">Your AI Companion</div>
         </div>
       </div>
 
@@ -371,7 +396,7 @@
       <!-- Conversations view (left panel) -->
       <aside id="convosView" class="view list-panel">
         <div class="list-search">
-          <input id="search" class="search" placeholder="Search chats or prompts" aria-label="Search chats" />
+          <input id="search" class="search" placeholder="Search chats" aria-label="Search chats" />
           <button id="newMobileChat" class="new-chat" aria-label="New chat">+</button>
         </div>
         <div id="convoList" style="overflow:auto;padding:6px;" aria-live="polite"></div>
@@ -383,7 +408,7 @@
 
         <div class="composer-bar">
           <button id="attach" class="attach" aria-label="Attach">＋</button>
-          <textarea id="input" class="input" rows="1" placeholder="Message Jaxx…" aria-label="Message input"></textarea>
+          <textarea id="input" class="input" rows="1" placeholder="Ask Jaxx anything…" aria-label="Message input"></textarea>
           <button id="send" class="send-btn" aria-label="Send">Send</button>
         </div>
 
@@ -396,7 +421,7 @@
 
       <!-- Explore view placeholder -->
       <section id="exploreView" class="view">
-        <div style="padding:18px;color:var(--muted)">Explore: saved prompts, templates and quick actions will appear here.</div>
+        <div style="padding:18px;color:#d8b4fe">Explore: saved prompts, templates and quick actions will appear here.</div>
       </section>
 
       <!-- Settings view (full view on mobile) -->
@@ -413,12 +438,12 @@
 
           <div>
             <label class="muted">API endpoint</label>
-            <input id="api-url" type="text" placeholder="https://your-proxy.example/chat" />
+            <input id="api-url" type="text" placeholder="https://your-proxy.example/chat" style="background:rgba(168,85,247,0.08);border:1.5px solid rgba(168,85,247,0.3);border-radius:12px;padding:10px;color:inherit" />
           </div>
 
           <div>
             <label class="muted">Header (name:value)</label>
-            <input id="api-header" type="text" placeholder="X-Client-Key: bbavjwbx" />
+            <input id="api-header" type="text" placeholder="X-Client-Key: xxx" style="background:rgba(168,85,247,0.08);border:1.5px solid rgba(168,85,247,0.3);border-radius:12px;padding:10px;color:inherit" />
           </div>
 
           <div style="display:flex;gap:8px">
@@ -430,7 +455,7 @@
 
     </div>
 
-    <div class="version-badge" id="versionBadge">Version: v2 — <a id="noSwLink" href="?no-sw=1" style="color:var(--accent)">Load without SW</a></div>
+    <div class="version-badge" id="versionBadge">JAXX v2 — <a id="noSwLink" href="?no-sw=1" style="color:#f3e8ff;text-decoration:none">No SW</a></div>
 
     <!-- onboarding guide overlay (hidden by default) -->
     <div id="onboard" class="onboard-overlay hidden" aria-hidden="true">
@@ -451,18 +476,12 @@
       </div>
     </div>
 
-    <!-- floating mini-windows -->
-    <div class="floating-windows" aria-hidden="true">
-      <div id="mini1" class="mini-window" style="top:110px;right:18px">Saved prompts<div class="muted" style="font-size:12px;margin-top:6px">"Quick intro"</div></div>
-      <div id="mini2" class="mini-window" style="top:220px;right:18px">Shortcuts<div class="muted" style="font-size:12px;margin-top:6px">Cmd+K to search</div></div>
-    </div>
-
   </div>
 
   <script>
     // App version for debugging and cache-bypass
     const APP_VERSION = 'v2';
-    console.log('Jaxx AI version', APP_VERSION);
+    console.log('JAXX AI version', APP_VERSION);
 
     // Platform detection + theme
     const platformSelect = document.getElementById('platformSelect');
@@ -489,26 +508,23 @@
     function showView(id){
       views.forEach(v => document.getElementById(v).classList.remove('active'));
       document.getElementById(id).classList.add('active');
-      // update nav active
       document.querySelectorAll('.nav-btn').forEach(b=> b.classList.toggle('active', b.dataset.view===id));
     }
 
-    // When app starts, show splash; animate hide and then show onboarding if first time
     function hideSplashAndMaybeOnboard(){
       if(!splash) return;
       splash.classList.add('hidden');
-      setTimeout(()=>{ if(splash) { splash.style.display='none'; splash.setAttribute('aria-hidden','true'); } }, 600);
+      setTimeout(()=>{ if(splash) { splash.style.display='none'; splash.setAttribute('aria-hidden','true'); } }, 800);
 
       const dont = localStorage.getItem('jaxx_onboard_dont');
-      if(!dont){ // show onboarding after slight delay
-        setTimeout(()=> showOnboarding(), 650);
+      if(!dont){ 
+        setTimeout(()=> showOnboarding(), 850);
       }
     }
     startBtn.addEventListener('click', ()=>{ hideSplashAndMaybeOnboard(); });
     setTimeout(()=>{ if(splash) splash.classList.add('hint'); }, 900);
-    setTimeout(()=>{ if(splash && splash.style.display!=='none') hideSplashAndMaybeOnboard(); }, 3200);
+    setTimeout(()=>{ if(splash && splash.style.display!=='none') hideSplashAndMaybeOnboard(); }, 3500);
 
-    // Basic UI wiring (conversations, chat, settings)
     const convoListEl = document.getElementById('convoList');
     const chatEl = document.getElementById('chat');
     const inputEl = document.getElementById('input');
@@ -561,7 +577,6 @@
         const b = document.createElement('div'); b.className='bubble '+(m.role==='user'?'user':'bot');
         b.innerHTML = escapeHtml(m.text) + `<div class='meta-line'>${shortTs(m.ts)}</div>`;
         chatEl.appendChild(b);
-        // stagger existing messages slightly
         setTimeout(()=> b.classList.add('show'), 30 + i*40);
       });
       chatEl.scrollTop = chatEl.scrollHeight;
@@ -582,27 +597,21 @@
 
     function escapeHtml(s){ return s.replace(/[&<>\\\"']/g, function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[m]}); }
 
-    // Composer
     sendBtn.addEventListener('click', ()=>{ const txt = inputEl.value.trim(); if(!txt) return; appendMessageToCurrent('user', txt); inputEl.value=''; handleSend(txt); });
     inputEl.addEventListener('keydown', (e)=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendBtn.click(); }});
 
-    // New chat
     document.getElementById('newChatBtn').addEventListener('click', ()=>{ createConversation('New Chat'); showView('chatView'); });
     document.getElementById('newMobileChat').addEventListener('click', ()=>{ createConversation('New Chat'); showView('chatView'); });
 
-    // Search
     searchEl.addEventListener('input',(e)=>renderConvoList(e.target.value));
 
-    // Nav buttons
-    document.querySelectorAll('.nav-btn').forEach(b=>b.addEventListener('click', ()=>{ const v = b.dataset.view; showView(v); document.querySelectorAll('.nav-btn').forEach(n=>n.classList.remove('active')); b.classList.add('active'); }));
+    document.querySelectorAll('.nav-btn').forEach(b=>b.addEventListener('click', ()=>{ const v = b.dataset.view; showView(v); }));
 
-    // Modes inside settings
     document.querySelectorAll('.mode').forEach(b=>b.addEventListener('click', ()=>{
       document.querySelectorAll('.mode').forEach(x=>x.classList.remove('active'));
       b.classList.add('active'); mode = b.dataset.mode || 'echo';
     }));
 
-    // API test
     testApiBtn.addEventListener('click', async ()=>{
       const url = apiUrlInput.value.trim(); const header = apiHeaderInput.value.trim();
       if(!url) return alert('Enter API URL');
@@ -617,7 +626,6 @@
       }catch(err){ alert('API test failed: '+err.message); }
     });
 
-    // Onboarding guide implementation
     const onboard = document.getElementById('onboard');
     const onboardContent = document.getElementById('onboardContent');
     const onboardDots = document.getElementById('onboardDots');
@@ -626,16 +634,16 @@
     const onboardDontShow = document.getElementById('onboardDontShow');
 
     const steps = [
-      {title:'Create a new chat', body:'Tap New to start a conversation. You can have multiple chats for different topics.'},
-      {title:'Send messages', body:'Type in the composer and press Send. Use Shift+Enter for a newline.'},
-      {title:'Connect an LLM', body:'Open Settings → API and enter your proxy endpoint and header (X-Client-Key). Then Test.'},
-      {title:'Use Quick Prompts', body:'Tap the saved prompts or the ? guide button anytime to reopen this guide.'}
+      {title:'Start a Chat', body:'Tap New to begin a conversation. You can have multiple chats organized by topic.'},
+      {title:'Send Messages', body:'Type your message and hit Send. Press Shift+Enter for multiple lines.'},
+      {title:'Connect Your API', body:'Go to Settings → API endpoint to add your LLM proxy and authentication header.'},
+      {title:'Explore Features', body:'Check the Explore tab for saved prompts, templates, and quick actions.'}
     ];
     let stepIndex = 0;
 
     function renderOnboard(){
       const s = steps[stepIndex];
-      onboardContent.innerHTML = `<h3 style="margin:0 0 8px">${s.title}</h3><div class="muted">${s.body}</div>`;
+      onboardContent.innerHTML = `<h3 style="margin:0 0 8px;color:#f3e8ff">${s.title}</h3><div class="muted">${s.body}</div>`;
       onboardDots.innerHTML = steps.map((_,i)=>`<span class="onboard-dot ${i===stepIndex? 'active':''}"></span>`).join('');
       onboardPrev.disabled = stepIndex===0;
       onboardNext.textContent = stepIndex===steps.length-1 ? 'Done' : 'Next';
@@ -650,22 +658,19 @@
     onboardPrev.addEventListener('click', ()=>{ if(stepIndex>0){ stepIndex--; renderOnboard(); }});
     onboardNext.addEventListener('click', ()=>{
       if(stepIndex < steps.length-1){ stepIndex++; renderOnboard(); return; }
-      // Finish
       if(onboardDontShow.checked) localStorage.setItem('jaxx_onboard_dont', '1');
       onboard.classList.add('hidden'); onboard.setAttribute('aria-hidden','true'); setTimeout(()=> onboard.style.display='none', 320);
     });
 
     showGuideBtn.addEventListener('click', ()=> { onboard.style.display='flex'; showOnboarding(); });
 
-    // API send handler
     async function handleSend(text){
       if(mode==='echo'){ setTimeout(()=>appendMessageToCurrent('bot','Echo: '+text), 300 + Math.random()*300); return; }
       if(mode==='rules'){ setTimeout(()=>{ const t=text.toLowerCase(); if(/hello|hi|hey\\b/.test(t)) appendMessageToCurrent('bot','Hello!'); else if(/time/.test(t)) appendMessageToCurrent('bot','It\'s time to chat!'); else appendMessageToCurrent('bot','Got it: '+text.slice(0,40)); }, 200); return; }
 
       const url = apiUrlInput.value.trim(); const header = apiHeaderInput.value.trim();
       if(!url){ appendMessageToCurrent('bot','API URL not set in Settings.'); return; }
-      const typing = { role:'bot', text:'Jaxx is thinking...', ts: nowISO() };
-      appendMessageToCurrent('bot', typing.text);
+      appendMessageToCurrent('bot', 'Thinking...');
 
       try{
         const headers = {'Content-Type':'application/json'};
@@ -678,11 +683,10 @@
         appendMessageToCurrent('bot', reply);
       }catch(err){
         const c = conversations.find(x=>x.id===selectedId); if(c && c.messages.length) c.messages.pop();
-        appendMessageToCurrent('bot','API error: '+err.message);
+        appendMessageToCurrent('bot','Error: '+err.message);
       }
     }
 
-    // Init: load persisted state if present
     (function init(){
       try{
         const saved = localStorage.getItem('jaxx_state');
@@ -691,34 +695,26 @@
           conversations = s.conversations || [];
           selectedId = s.selectedId || null;
         }
-      }catch(e){/* ignore */}
-      if(conversations.length===0){ createConversation('Welcome'); appendMessageToCurrent('bot','Welcome to Jaxx AI — tap New to start a chat'); }
+      }catch(e){}
+      if(conversations.length===0){ createConversation('Welcome'); appendMessageToCurrent('bot','Welcome to JAXX AI — your intelligent companion'); }
       renderConvoList();
       if(selectedId) selectConversation(selectedId);
 
-      // register service worker for offline/PWA
-      // allow bypass with ?no-sw=1 or localStorage flag
       const urlParams = new URLSearchParams(window.location.search);
       const skipSW = urlParams.has('no-sw') || localStorage.getItem('jaxx_skip_sw');
       if(!skipSW && 'serviceWorker' in navigator){
-        navigator.serviceWorker.register('/Chatbot-app/sw.js').then(()=>console.log('SW registered (version:', APP_VERSION, ')')).catch(()=>console.log('SW registration failed'));
-      } else if(skipSW){
-        console.log('Service worker registration skipped (no-sw active) — APP_VERSION', APP_VERSION);
+        navigator.serviceWorker.register('/Chatbot-app/sw.js').then(()=>console.log('SW registered')).catch(()=>console.log('SW registration failed'));
       }
 
-      // autosave periodically
       setInterval(()=>{
         try{ localStorage.setItem('jaxx_state', JSON.stringify({ conversations, selectedId })); }catch(e){}
       }, 2000);
-
     })();
 
-    // show link behavior: clicking "Load without SW" sets localStorage and reloads
     document.getElementById('noSwLink').addEventListener('click', (e)=>{
-      e.preventDefault(); localStorage.setItem('jaxx_skip_sw','1'); window.location.href = window.location.pathname + window.location.search.replace(/no-sw=?1?/,'');
+      e.preventDefault(); localStorage.setItem('jaxx_skip_sw','1'); window.location.href = window.location.pathname;
     });
 
-    // Expose showView for debugging
     window.showView = showView;
 
   </script>
